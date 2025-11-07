@@ -56,8 +56,9 @@ fi
 # Install Neovim (latest stable)
 if ! command -v nvim &> /dev/null; then
     echo "✏️  Installing Neovim..."
-    curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz
-    sudo rm -rf /opt/nvim
+    NVIM_VERSION=$(curl -s "https://api.github.com/repos/neovim/neovim/releases/latest" | grep -Po '"tag_name": "\K[^"]*')
+    curl -Lo nvim-linux64.tar.gz "https://github.com/neovim/neovim/releases/download/${NVIM_VERSION}/nvim-linux64.tar.gz"
+    sudo rm -rf /opt/nvim-linux64
     sudo tar -C /opt -xzf nvim-linux64.tar.gz
     sudo ln -sf /opt/nvim-linux64/bin/nvim /usr/local/bin/nvim
     rm nvim-linux64.tar.gz
