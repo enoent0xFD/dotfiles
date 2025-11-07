@@ -4,6 +4,15 @@ set -euo pipefail
 
 echo "🚀 Setting up Ubuntu environment..."
 
+# Ensure ~/.local/bin is in PATH for this session
+export PATH="$HOME/.local/bin:$PATH"
+
+# Add to bashrc if not already present (for future sessions)
+if ! grep -q '.local/bin' ~/.bashrc 2>/dev/null; then
+    echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+    echo "✅ Added ~/.local/bin to PATH in .bashrc"
+fi
+
 # Update package lists
 sudo apt-get update
 
@@ -112,11 +121,6 @@ fi
 if ! command -v starship &> /dev/null; then
     echo "🚀 Installing Starship prompt..."
     curl -sS https://starship.rs/install.sh | sh -s -- -y
-fi
-
-# Ensure ~/.local/bin is in PATH
-if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-    echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 fi
 
 echo "✅ Setup complete! Restart your shell or run: source ~/.bashrc"
