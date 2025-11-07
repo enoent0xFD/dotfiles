@@ -15,12 +15,32 @@ sudo apt-get install -y \
     git \
     build-essential \
     unzip \
-    tar
+    tar \
+    htop \
+    tmux \
+    jq \
+    ncdu \
+    tree
 
 # Install ripgrep
 if ! command -v rg &> /dev/null; then
     echo "🔍 Installing ripgrep..."
     sudo apt-get install -y ripgrep
+fi
+
+# Install fd (modern find)
+if ! command -v fd &> /dev/null; then
+    echo "🔎 Installing fd..."
+    sudo apt-get install -y fd-find
+    mkdir -p ~/.local/bin
+    ln -sf $(which fdfind) ~/.local/bin/fd
+fi
+
+# Install fzf (fuzzy finder)
+if ! command -v fzf &> /dev/null; then
+    echo "🎯 Installing fzf..."
+    git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+    ~/.fzf/install --key-bindings --completion --no-update-rc
 fi
 
 # Install eza (modern ls replacement)
@@ -62,6 +82,30 @@ if ! command -v nvim &> /dev/null; then
     sudo tar -C /opt -xzf nvim-linux-x86_64.tar.gz
     sudo ln -sf /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
     rm nvim-linux-x86_64.tar.gz
+fi
+
+# Install btop (better htop)
+if ! command -v btop &> /dev/null; then
+    echo "📊 Installing btop..."
+    sudo apt-get install -y btop || echo "btop not available in repos, skipping"
+fi
+
+# Install duf (better df)
+if ! command -v duf &> /dev/null; then
+    echo "💾 Installing duf..."
+    DUF_VERSION=$(curl -s "https://api.github.com/repos/muesli/duf/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+    curl -Lo duf.deb "https://github.com/muesli/duf/releases/download/v${DUF_VERSION}/duf_${DUF_VERSION}_linux_amd64.deb"
+    sudo dpkg -i duf.deb
+    rm duf.deb
+fi
+
+# Install git-delta (better git diff)
+if ! command -v delta &> /dev/null; then
+    echo "🔺 Installing git-delta..."
+    DELTA_VERSION=$(curl -s "https://api.github.com/repos/dandavison/delta/releases/latest" | grep -Po '"tag_name": "\K[^"]*')
+    curl -Lo delta.deb "https://github.com/dandavison/delta/releases/download/${DELTA_VERSION}/git-delta_${DELTA_VERSION}_amd64.deb"
+    sudo dpkg -i delta.deb
+    rm delta.deb
 fi
 
 # Install Starship prompt (optional but nice)
