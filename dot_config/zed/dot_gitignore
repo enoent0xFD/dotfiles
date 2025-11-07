@@ -1,0 +1,4 @@
+# add conversations directory, prompts and embeddings directory to gitnore
+conversations/*
+embeddings/*
+prompts/*
